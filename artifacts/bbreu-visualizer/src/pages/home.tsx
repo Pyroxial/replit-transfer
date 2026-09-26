@@ -7,22 +7,22 @@ import { Timeline } from '@/components/bbreu/Timeline';
 import { getPhase, getTelemetry, type ViewMode } from '@/components/bbreu/types';
 
 const layers = [
-  { name: 'Host bone ends', note: 'Cortical interface', color: '#ecad7b' },
-  { name: 'Vascularized fibula graft', note: 'Biological scaffold', color: '#f2756a' },
-  { name: 'Regenerating matrix', note: 'Mineralized bridge', color: '#e6c36f' },
-  { name: 'Structural shell', note: 'Load-bearing layer', color: '#5bd7d0' },
-  { name: 'Hydrophobic seal', note: 'Barrier layer', color: '#95a7b3' },
+  { name: 'Host bone ends', note: 'White native bone', color: '#f1f4ed' },
+  { name: 'Vascularized fibula graft', note: 'White graft with red vessels', color: '#e96b64' },
+  { name: 'Regenerating matrix', note: 'Bone growing from graft', color: '#76d69d' },
+  { name: 'Structural shell', note: 'Encasing around graft', color: '#5bd7d0' },
+  { name: 'Hydrophobic seal', note: 'Outer barrier layer', color: '#e5c56d' },
 ];
 
 const legendItems = [
-  { name: 'Host bone ends', note: 'Native femur above and below the defect', color: '#ecad7b' },
-  { name: 'Vascularized fibula graft', note: 'Central biological graft scaffold', color: '#f2756a' },
-  { name: 'Vessel pathway', note: 'Red line representing the graft vasculature', color: '#ff8c75' },
-  { name: 'MA-HA hydrogel', note: 'Inner swelling layer that applies inward pressure', color: '#55d9d1' },
-  { name: 'Structural shell', note: 'Load-bearing biodegradable middle layer', color: '#67d9d0' },
-  { name: 'Hydrophobic seal skin', note: 'Outer fluid barrier that protects the construct', color: '#e5c56d' },
-  { name: 'Regenerating native matrix', note: 'Green mineralized bone bridge over time', color: '#75d39f' },
-  { name: 'Step-bevel joints', note: 'Interlocking end interfaces at the host bone', color: '#aa684c' },
+  { name: 'Original bone / bone ends', note: 'White native bone on both sides of the gap', colors: ['#f7f8f2', '#d6ddd6'] },
+  { name: 'Vascularized fibula graft', note: 'White biological graft with red vascular markings', colors: ['#f7f8f2', '#e96b64'] },
+  { name: 'Vessel pathway', note: 'Red line showing blood-vessel continuity through the graft', colors: ['#e96b64'] },
+  { name: 'Regenerating bone', note: 'Green bone matrix generated around and from the graft', colors: ['#76d69d'] },
+  { name: 'MA-HA hydrogel', note: 'Cyan inner layer surrounding the graft', colors: ['#55d9d1'] },
+  { name: 'Structural shell', note: 'Turquoise biodegradable encasing around the construct', colors: ['#67d9d0'] },
+  { name: 'Hydrophobic seal', note: 'Gold outer fluid barrier around the encasing', colors: ['#e5c56d'] },
+  { name: 'Step-bevel joints', note: 'White-gray interlocking interfaces where graft meets host bone', colors: ['#b9c8c1'] },
 ];
 
 export default function Home() {
@@ -113,7 +113,10 @@ export default function Home() {
                 </div>
                 <div className="space-y-2.5">
                   {legendItems.map((item) => <div key={item.name} className="flex items-start gap-2.5">
-                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span
+                      className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full border border-white/10"
+                      style={{ background: item.colors.length > 1 ? `linear-gradient(90deg, ${item.colors[0]} 0 50%, ${item.colors[1]} 50% 100%)` : item.colors[0] }}
+                    />
                     <span><span className="block text-[11px] text-slate-200">{item.name}</span><span className="block text-[9px] leading-relaxed text-slate-600">{item.note}</span></span>
                   </div>)}
                 </div>

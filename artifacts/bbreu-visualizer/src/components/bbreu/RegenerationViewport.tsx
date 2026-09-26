@@ -20,6 +20,7 @@ type FallbackTransform = {
   panX: number;
   panY: number;
   rotation: number;
+  tilt: number;
 };
 
 const defaultFallbackTransform: FallbackTransform = {
@@ -27,6 +28,7 @@ const defaultFallbackTransform: FallbackTransform = {
   panX: 0,
   panY: 0,
   rotation: 0,
+  tilt: 0,
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -100,10 +102,10 @@ function fallbackAssembly(
 
   if (visibleLayers['Regenerating matrix']) {
     const matrixGradient = context.createLinearGradient(-50, 0, 50, 0);
-    matrixGradient.addColorStop(0, progress > 0.35 ? '#4abf91' : '#c9795d');
-    matrixGradient.addColorStop(0.5, progress > 0.35 ? '#a4e39e' : '#f0a46d');
-    matrixGradient.addColorStop(1, progress > 0.35 ? '#47a980' : '#b66659');
-    context.globalAlpha = 0.45 + progress * 0.44;
+    matrixGradient.addColorStop(0, '#5fbd8e');
+    matrixGradient.addColorStop(0.5, '#bce9c7');
+    matrixGradient.addColorStop(1, '#55ad82');
+    context.globalAlpha = 0.16 + progress * 0.58;
     context.fillStyle = matrixGradient;
     roundedRect(-51, -gap / 2 - 3, 102, gap + 6, 14);
     context.fill();
@@ -112,9 +114,11 @@ function fallbackAssembly(
   if (visibleLayers['Vascularized fibula graft']) {
     context.globalAlpha = 0.98;
     const graftGradient = context.createLinearGradient(-31, 0, 31, 0);
-    graftGradient.addColorStop(0, '#8e4f45');
-    graftGradient.addColorStop(0.45, '#f28e68');
-    graftGradient.addColorStop(1, '#a9574b');
+    graftGradient.addColorStop(0, '#d85d5e');
+    graftGradient.addColorStop(0.18, '#f4f4ed');
+    graftGradient.addColorStop(0.5, '#ffffff');
+    graftGradient.addColorStop(0.82, '#f4f4ed');
+    graftGradient.addColorStop(1, '#d85d5e');
     context.fillStyle = graftGradient;
     roundedRect(-32, -gap / 2 - 3, 64, gap + 6, 12);
     context.fill();
@@ -134,16 +138,16 @@ function fallbackAssembly(
   if (visibleLayers['Structural shell']) {
     context.save();
     context.globalAlpha = 0.94;
-    context.fillStyle = '#aa684c';
+    context.fillStyle = '#e7eee7';
     [-1, 1].forEach((side) => {
       const y = side * (gap / 2 + 5);
       roundedRect(-82, y - 9, 164, 18, 7);
       context.fill();
-      context.fillStyle = '#df9b68';
+      context.fillStyle = '#b9c8c1';
       for (let index = 0; index < 5; index += 1) {
         context.fillRect(-62 + index * 30, side < 0 ? y - 14 : y - 1, 16, 7);
       }
-      context.fillStyle = '#aa684c';
+      context.fillStyle = '#e7eee7';
     });
     context.restore();
   }
@@ -154,15 +158,15 @@ function fallbackAssembly(
     context.save();
     context.translate(depth, 0);
     const gradient = context.createLinearGradient(-78, 0, 78, 0);
-    gradient.addColorStop(0, '#774a3c');
-    gradient.addColorStop(0.38, '#f2b77f');
-    gradient.addColorStop(1, '#a9654c');
+    gradient.addColorStop(0, '#d6ddd6');
+    gradient.addColorStop(0.38, '#ffffff');
+    gradient.addColorStop(1, '#e9eee8');
     context.fillStyle = gradient;
     roundedRect(-78, y, 156, 146, 22);
     context.fill();
-    context.fillStyle = 'rgba(37, 25, 27, .42)';
+    context.fillStyle = 'rgba(94, 113, 111, .28)';
     context.fillRect(-55, top ? y + 116 : y + 8, 110, 24);
-    context.fillStyle = 'rgba(255, 215, 161, .28)';
+    context.fillStyle = 'rgba(255, 255, 255, .62)';
     context.fillRect(-62, top ? y + 8 : y + 114, 124, 5);
     context.restore();
   };
@@ -206,7 +210,6 @@ export function RegenerationViewport({
   visibleLayers,
 }: RegenerationViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const controlsRef = useRef<any>(null);
   const fallbackModeRef = useRef(false);
   const fallbackTransformRef = useRef<FallbackTransform>({ ...defaultFallbackTransform });
   const pointerRef = useRef<{
@@ -228,11 +231,7 @@ export function RegenerationViewport({
 
     const scene = new three.Scene();
     const camera = new three.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(
-      view === 'section' ? 0 : 5.8,
-      view === 'section' ? 0.4 : 2.2,
-      view === 'section' ? 10.5 : 7.6,
-    );
+    camera.position.set(0, view === 'section' ? 0.35 : 0.25, view === 'section' ? 10.5 : 8.6);
 
     let renderer: any;
     try {
@@ -262,13 +261,13 @@ export function RegenerationViewport({
     const sliceLength = view === 'section' ? Math.PI : Math.PI * 2;
     const boneOpen = view === 'section';
     const boneMaterial = new three.MeshStandardMaterial({
-      color: 0xd99065,
+      color: 0xf1f4ed,
       roughness: 0.72,
       metalness: 0.04,
       side: three.DoubleSide,
     });
     const boneHighlight = new three.MeshStandardMaterial({
-      color: 0xf1b67e,
+      color: 0xffffff,
       roughness: 0.8,
       metalness: 0.03,
       side: three.DoubleSide,
@@ -318,9 +317,9 @@ export function RegenerationViewport({
     const matrix = new three.Mesh(
       new three.CylinderGeometry(0.67, 0.67, gap + 0.48, 18, 1, boneOpen, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
-        color: progress > 0.35 ? 0x75d39f : 0xeb9e6e,
+        color: 0x76d69d,
         transparent: true,
-        opacity: 0.38 + progress * 0.42,
+        opacity: 0.16 + progress * 0.58,
         roughness: 0.72,
         side: three.DoubleSide,
       }),
@@ -329,11 +328,18 @@ export function RegenerationViewport({
     group.add(matrix);
     const graft = new three.Mesh(
       new three.CylinderGeometry(0.48, 0.48, gap + 0.58, 16, 1, boneOpen, sliceStart, sliceLength),
-      new three.MeshStandardMaterial({ color: 0xead6af, roughness: 0.78, side: three.DoubleSide }),
+      new three.MeshStandardMaterial({ color: 0xf4f4ed, roughness: 0.78, side: three.DoubleSide }),
     );
     graft.name = 'Vascularized fibula graft';
     graft.position.z = 0.03;
     group.add(graft);
+    const graftVascularHalf = new three.Mesh(
+      new three.CylinderGeometry(0.485, 0.485, gap + 0.6, 16, 1, boneOpen, Math.PI / 2, Math.PI),
+      new three.MeshStandardMaterial({ color: 0xe96b64, roughness: 0.7, side: three.DoubleSide }),
+    );
+    graftVascularHalf.name = 'Vascularized fibula graft';
+    graftVascularHalf.position.z = 0.04;
+    group.add(graftVascularHalf);
     const vessel = new three.Mesh(
       new three.TorusGeometry(0.57, 0.035, 7, 48),
       new three.MeshBasicMaterial({ color: 0xe96b64 }),
@@ -347,13 +353,13 @@ export function RegenerationViewport({
       new three.MeshBasicMaterial({ color: 0xf2756a }),
     );
     vesselCore.name = 'Vascularized fibula graft';
-    vesselCore.position.x = 0.25;
+    vesselCore.position.set(0.25, 0, 0.5);
     group.add(vesselCore);
 
     const jointMaterial = new three.MeshStandardMaterial({
-      color: 0xb26d4d,
+      color: 0xe7eee7,
       roughness: 0.56,
-      metalness: 0.06,
+      metalness: 0.02,
     });
     [-1, 1].forEach((side) => {
       const joint = new three.Mesh(new three.BoxGeometry(1.42, 0.23, 1.08), jointMaterial);
@@ -366,22 +372,6 @@ export function RegenerationViewport({
       if (object.name && visibleLayers[object.name] === false) object.visible = false;
     });
     scene.add(group);
-
-    const OrbitControls = three.OrbitControls;
-    if (OrbitControls) {
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.07;
-      controls.enablePan = true;
-      controls.screenSpacePanning = true;
-      controls.panSpeed = 0.75;
-      controls.rotateSpeed = 0.7;
-      controls.zoomSpeed = 0.9;
-      controls.minDistance = 3.2;
-      controls.maxDistance = 16;
-      controls.target.set(0, 0, 0);
-      controlsRef.current = controls;
-    }
 
     const resize = () => {
       const width = canvas.clientWidth || 600;
@@ -397,8 +387,15 @@ export function RegenerationViewport({
     const animate = () => {
       animationFrame = requestAnimationFrame(animate);
       vessel.scale.set(1, 1 + Math.sin(Date.now() / 170) * 0.08, 1);
-      group.rotation.y += view === 'section' ? 0.0005 : 0.001;
-      if (controlsRef.current) controlsRef.current.update();
+      const transform = fallbackTransformRef.current;
+      group.position.x = transform.panX * 0.005;
+      group.position.y = -transform.panY * 0.005;
+      group.rotation.y = transform.rotation;
+      group.rotation.x = transform.tilt;
+      camera.position.x = 0;
+      camera.position.y = view === 'section' ? 0.35 : 0.25;
+      camera.position.z = (view === 'section' ? 10.5 : 8.6) / transform.zoom;
+      camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
     };
     animate();
@@ -406,13 +403,11 @@ export function RegenerationViewport({
     return () => {
       cancelAnimationFrame(animationFrame);
       observer.disconnect();
-      controlsRef.current?.dispose?.();
       renderer.dispose();
       scene.traverse((object: any) => {
         object.geometry?.dispose?.();
         object.material?.dispose?.();
       });
-      controlsRef.current = null;
     };
   }, [month, view, visibleLayers]);
 
@@ -427,17 +422,15 @@ export function RegenerationViewport({
       }
     };
     const onWheel = (event: WheelEvent) => {
-      if (!fallbackModeRef.current) return;
       event.preventDefault();
       fallbackTransformRef.current.zoom = clamp(
         fallbackTransformRef.current.zoom * Math.exp(-event.deltaY * 0.001),
-        0.55,
-        3.2,
+        0.65,
+        2.5,
       );
       redraw();
     };
     const onPointerDown = (event: PointerEvent) => {
-      if (!fallbackModeRef.current) return;
       canvas.setPointerCapture(event.pointerId);
       pointerRef.current = {
         x: event.clientX,
@@ -447,7 +440,7 @@ export function RegenerationViewport({
     };
     const onPointerMove = (event: PointerEvent) => {
       const pointer = pointerRef.current;
-      if (!fallbackModeRef.current || !pointer) return;
+      if (!pointer) return;
       const deltaX = event.clientX - pointer.x;
       const deltaY = event.clientY - pointer.y;
       pointer.x = event.clientX;
@@ -458,7 +451,15 @@ export function RegenerationViewport({
           -0.62,
           0.62,
         );
-        fallbackTransformRef.current.panY += deltaY * 0.35;
+        if (fallbackModeRef.current) {
+          fallbackTransformRef.current.panY += deltaY * 0.35;
+        } else {
+          fallbackTransformRef.current.tilt = clamp(
+            fallbackTransformRef.current.tilt + deltaY * 0.006,
+            -0.5,
+            0.5,
+          );
+        }
       } else {
         fallbackTransformRef.current.panX += deltaX;
         fallbackTransformRef.current.panY += deltaY;
@@ -488,10 +489,6 @@ export function RegenerationViewport({
   }, [month, view, visibleLayers]);
 
   const resetView = () => {
-    if (controlsRef.current?.reset) {
-      controlsRef.current.reset();
-      return;
-    }
     fallbackTransformRef.current = { ...defaultFallbackTransform };
     const canvas = canvasRef.current;
     if (canvas) {
@@ -562,7 +559,7 @@ export function RegenerationViewport({
         <div className="flex items-center justify-end gap-1.5 mono text-[9px] uppercase tracking-wider text-emerald-300">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" /> model active
         </div>
-        <p className="mt-1 mono text-[9px] text-slate-600">drag to inspect · wheel to zoom</p>
+        <p className="mt-1 mono text-[9px] text-slate-600">drag rotate · shift-drag move · wheel zoom</p>
       </div>
     </section>
   );

@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --font-sans: var(--app-font-sans);
+  --font-mono: var(--app-font-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 220 30% 7%;
+  --foreground: 204 33% 91%;
+  --border: 214 26% 18%;
+  --input: 215 25% 20%;
+  --ring: 168 80% 46%;
+  --card: 220 27% 10%;
+  --card-foreground: 204 33% 91%;
+  --card-border: 215 24% 18%;
+  --primary: 168 80% 46%;
+  --primary-foreground: 220 30% 7%;
+  --secondary: 219 26% 15%;
+  --secondary-foreground: 204 22% 76%;
+  --muted: 217 23% 14%;
+  --muted-foreground: 214 15% 56%;
+  --accent: 24 92% 62%;
+  --accent-foreground: 220 30% 7%;
+  --destructive: 0 74% 61%;
+  --destructive-foreground: 0 0% 100%;
+  --chart-1: 168 80% 46%;
+  --chart-2: 24 92% 62%;
+  --chart-3: 197 78% 62%;
+  --chart-4: 342 76% 62%;
+  --chart-5: 48 92% 64%;
+  --app-font-sans: 'Plus Jakarta Sans', sans-serif;
+  --app-font-mono: 'DM Mono', monospace;
+  --radius: 0.7rem;
+  --elevate-1: rgba(255,255,255,.03);
+  --elevate-2: rgba(255,255,255,.07);
+}
+
+.dark {
+  --background: 220 30% 7%;
+  --foreground: 204 33% 91%;
+  --border: 214 26% 18%;
+  --input: 215 25% 20%;
+  --ring: 168 80% 46%;
+  --card: 220 27% 10%;
+  --card-foreground: 204 33% 91%;
+  --card-border: 215 24% 18%;
+  --primary: 168 80% 46%;
+  --primary-foreground: 220 30% 7%;
+  --secondary: 219 26% 15%;
+  --secondary-foreground: 204 22% 76%;
+  --muted: 217 23% 14%;
+  --muted-foreground: 214 15% 56%;
+  --accent: 24 92% 62%;
+  --accent-foreground: 220 30% 7%;
+  --destructive: 0 74% 61%;
+  --destructive-foreground: 0 0% 100%;
+  --chart-1: 168 80% 46%;
+  --chart-2: 24 92% 62%;
+  --chart-3: 197 78% 62%;
+  --chart-4: 342 76% 62%;
+  --chart-5: 48 92% 64%;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { background: hsl(var(--background)); }
+  body { @apply font-sans antialiased bg-background text-foreground; margin: 0; min-width: 320px; }
+  button, input { font: inherit; }
+}
+
+@layer utilities {
+  .instrument-grid {
+    background-image: linear-gradient(rgba(117,145,163,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(117,145,163,.055) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .glass-panel { background: linear-gradient(145deg, rgba(25,34,46,.93), rgba(12,19,29,.96)); border: 1px solid rgba(125,157,174,.16); box-shadow: 0 20px 60px rgba(0,0,0,.26), inset 0 1px rgba(255,255,255,.035); }
+  .mono { font-family: var(--app-font-mono); }
+  .hairline { height: 1px; background: linear-gradient(90deg, transparent, rgba(121,157,173,.28), transparent); }
+}
+
+@keyframes pulseTrace { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+@keyframes vesselBeat { 0%,100% { transform: scaleY(.88); opacity: .62; } 50% { transform: scaleY(1.05); opacity: 1; } }
+@keyframes enterUp { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+.animate-enter { animation: enterUp .5s ease-out both; }
+.animate-trace { animation: pulseTrace 2.2s ease-in-out infinite; }
+.animate-vessel { animation: vesselBeat 1.15s ease-in-out infinite; transform-origin: center; }
+.timeline-range { height: 18px; }
+.timeline-range::-webkit-slider-thumb { appearance: none; width: 17px; height: 17px; margin-top: -7px; border: 2px solid #0b1119; border-radius: 50%; background: #5bd7d0; box-shadow: 0 0 0 1px rgba(91,215,208,.7), 0 0 14px rgba(91,215,208,.25); cursor: grab; }
+.timeline-range::-webkit-slider-runnable-track { height: 3px; border-radius: 4px; background: transparent; }
+.timeline-range::-moz-range-thumb { width: 13px; height: 13px; border: 2px solid #0b1119; border-radius: 50%; background: #5bd7d0; box-shadow: 0 0 0 1px rgba(91,215,208,.7); cursor: grab; }
+.timeline-range::-moz-range-track { height: 3px; border-radius: 4px; background: transparent; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--secondary)); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }

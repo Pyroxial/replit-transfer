@@ -1,0 +1,69 @@
+You are an expert full-stack developer and 3D WebGL graphics engineer. Build a fully responsive, high-tech interactive 3D web application in standard HTML, CSS, JavaScript, and Three.js (via CDN or bundled) to demonstrate a novel medical concept: the BBREU (Biodegradable Bone Regenerative Encasing Unit) for single-stage 7+ cm long-bone defect repair.
+
+---
+
+### PART 1: UNDERSTANDING THE PRODUCT & MECHANICS (CONTEXT)
+The BBREU is a bio-resorbable 3D-printed sleeve that bridges a missing bone section (e.g., human femur) without permanent metal screws, plates, or external steel frames.
+
+1. THE ANATOMY & LAYER ARCHITECTURE (4 CONCENTRIC LAYERS):
+   - Layer 0 (Core Graft): A central 7+ cm live vascularized fibula graft (with a red pulsating artery/vein) surrounded by bone marrow aspirate (BMAC gel).
+   - Layer 1 (Innermost Engine): High concentration of Agent A (Methacrylated Hyaluronic Acid - MA-HA Hydrogel). Absorbs fluid rapidly, swells to exert INWARD RADIAL COMPRESSION onto the graft, and degrades fast (Months 1–3) to make room for new bone.
+   - Layer 2 (Middle Structural Shell): High concentration of Agent B (PLLA-PCL composite with Magnesium Whiskers). Rigid, slow-degrading (Months 12–18). Acts as an unyielding structural anvil that forces swelling inward while bearing heavy weight loads.
+   - Layer 3 (Outermost Hydrophobic Seal Skin): An ultra-thin, non-porous hydrophobic sealant skin wrapping the exterior perimeter. It acts as an impermeable fluid barrier preventing surrounding muscle fluids from eroding the casing from the outside, ensuring strict INSIDE-OUT degradation.
+   - Mechanical Ends: Top and bottom ends of the BBREU sleeve feature custom 3D jigsaw-style interlocking step-bevel cuts that lock directly into the host bone ends to resist torsional shear without metal screws.
+
+2. INSIDE-OUT DIFFERENTIAL DEGRADATION:
+   - Fluid can only enter through the internal core.
+   - The inner hydrogel layer (Layer 1) absorbs fluid and degrades first while squeezing the graft.
+   - As new bone consolidates, the outer structural shell (Layer 2) slowly erodes.
+   - The ultra-thin outer protective skin (Layer 3) stays intact for 12+ months, breaking down last so zero external fluid degrades the unit early.
+   - Result: 100% natural host bone remains with zero hardware left behind.
+
+---
+
+### PART 2: REQUIRED APPLICATION FEATURES & INTERFACE LAYOUT
+
+#### A. Central 3D Canvas (Three.js Engine)
+- Render a dark, modern surgical tech environment (#0F172A slate background).
+- Procedurally generate distinct 3D meshes/layers:
+  * Upper and Lower Host Femur bone ends (light bone color) with interlocking step-bevel cuts.
+  * Central Vascularized Fibula Graft (reddish bone tube) with a micro-vascular blood vessel (glowing red line).
+  * Layer 1: Inner Hydrogel Layer (Cyan/Blue semi-translucent sleeve).
+  * Layer 2: Middle Structural Shell (Slate/Grey semi-translucent shell).
+  * Layer 3: Outermost Hydrophobic Seal Skin (Ultra-thin, glowing electric-blue protective sheath wrap).
+  * Regenerating Native Bone Matrix (Bright green bioluminescent growth filling the gap over time).
+- Camera Controls: OrbitControls allowing full 3D rotation, pan, and zoom.
+
+#### B. View Modes (Top Header Toggle)
+- Mode 1: "3D Perspective View" (Standard full 3D exterior/interior assembly model showing all concentric layers and step-bevel lock joints).
+- Mode 2: "Vertical Cross-Section View" (Cuts the cylinder along its long vertical axis/longitudinal plane, clearly displaying the thickness of the outer hydrophobic skin, the structural shell wall, the inner hydrogel, the internal graft, and the central vessel).
+
+#### C. Interactive Timeline Controller (Bottom Bar)
+Create a smooth slider/scrubber driving a continuous 0% to 100% (Month 0 to Month 18) animation cycle:
+  - Phase 0 (0% - Month 0): Shows the bare 7+ cm bone defect with step-bevel ends. The vascularized graft is fixed in place between the bone ends.
+  - Phase 1 (15% - Month 0.5): The BBREU sleeve clamps around the graft, showing the outer hydrophobic barrier skin sealing out external muscle fluid.
+  - Phase 2 (30% - Month 3): Fluid activation. Animated inward vector arrows appear around the inner hydrogel showing inward radial pressure squeezing the graft. Graft begins thickening. Outer barrier skin remains 100% intact.
+  - Phase 3 (60% - Month 9): Inside-Out Degradation. The inner hydrogel dissolves away completely, replaced by dense green regenerating bone. The outer hydrophobic skin remains intact while the middle shell begins slow micro-erosion.
+  - Phase 4 (100% - Month 18): Full Resorption. Outer skin and middle shell fully dissolve away into non-toxic ions. The 7+ cm gap is fully bridged by solid, unified native bone.
+
+#### D. Live Analytics & Telemetry Panels
+
+1. Panel 1 (Top-Left): "Live Telemetry"
+   - Display real-time numeric values updated dynamically as the timeline slider moves:
+     * Inward Radial Force (kPa): Starts at 0, spikes to 45 kPa during hydrogel hydration (Months 1–3), then drops to 0 as it dissolves.
+     * Inner Hydrogel Mass (%): Starts at 100%, drops to 0% by Month 6.
+     * Outer Barrier Skin Integrity (%): Holds at 100% through Month 12, then drops to 0% by Month 18.
+     * Native Bone Fusion (%): Smoothly increases from 0% to 100%.
+
+2. Panel 2 (Top-Right): "Load Transfer Dynamics"
+   - Render an interactive line chart showing two intersecting curves across 0–18 months:
+     * Curve A (Red/Orange): Implant Load Bearing Capacity (100% -> 0%).
+     * Curve B (Green/Cyan): Regenerated Native Bone Load Capacity (0% -> 100%).
+   - Include a vertical scrubbing indicator line on the chart synchronized with the main timeline slider position.
+
+---
+
+### PART 3: TECHNICAL REQUIREMENTS & POLISH
+- Use modern UI styling: Glassmorphism panels, dark mode, high-contrast cyan (#06B6D4) and emerald (#10B981) highlights, clean typography (Inter/Sans-serif).
+- Ensure smooth interpolation on all 3D mesh transforms, opacity changes, and scale factors during slider movement.
+- Keep all code clean, modular, and self-contained (HTML/JS/CSS) so it runs directly in Replit's webview without missing dependencies.

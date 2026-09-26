@@ -1,6 +1,6 @@
-# [Project name]
+# BBREU Regeneration Visualizer
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+An interactive educational 3D visualization of the BBREU biodegradable bone-regeneration concept across an 18-month healing timeline.
 
 ## Run & Operate
 
@@ -22,23 +22,31 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/bbreu-visualizer/src/pages/home.tsx` — main research-console experience and application state
+- `artifacts/bbreu-visualizer/src/components/bbreu/` — 3D viewport, timeline, telemetry, chart, and shared model calculations
+- `artifacts/bbreu-visualizer/src/index.css` — visual system and responsive console styling
+- `artifacts/bbreu-visualizer/index.html` — Three.js CDN and OrbitControls entry points
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first build is frontend-only; timeline, telemetry, chart, and layer visibility are deterministic educational model calculations.
+- Three.js is loaded from the CDN so the artifact stays lightweight and self-contained; the canvas falls back to a 2D assembly rendering when WebGL is unavailable.
+- The app intentionally labels itself as an educational visualization rather than clinical guidance.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Inspect the layered BBREU construct in perspective or vertical section view.
+- Scrub or play through month 0–18 to see modeled degradation, graft, and native bone fusion changes.
+- Review live telemetry, toggle assembly layers, and compare implant versus regenerated bone load transfer.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+No additional preferences recorded.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The artifact workflow supplies `PORT` and `BASE_PATH`; direct production builds need both variables set.
+- Some browser preview environments cannot create WebGL contexts; do not remove the 2D fallback in `RegenerationViewport.tsx`.
 
 ## Pointers
 

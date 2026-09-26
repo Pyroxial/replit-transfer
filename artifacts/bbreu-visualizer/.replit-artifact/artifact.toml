@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BBREU Regeneration Visualizer"
+description = "An interactive educational 3D visualization of the BBREU biodegradable bone-regeneration concept, with layered anatomy, cross-section inspection, healing timeline, live telemetry, and load-transfer analytics."
+version = "1.0.0"
+id = "artifacts/bbreu-visualizer"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25092
+
+[services.development]
+run = "pnpm --filter @workspace/bbreu-visualizer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bbreu-visualizer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/bbreu-visualizer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25092"
+BASE_PATH = "/"

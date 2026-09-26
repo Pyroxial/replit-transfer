@@ -1,0 +1,1 @@
+- [WebGL preview fallback](webgl-preview-fallback.md) — browser previews may lack GPU/WebGL support, so 3D experiences need a visible non-WebGL rendering path.

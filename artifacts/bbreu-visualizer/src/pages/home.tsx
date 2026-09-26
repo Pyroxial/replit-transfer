@@ -14,10 +14,21 @@ const layers = [
   { name: 'Hydrophobic seal', note: 'Barrier layer', color: '#95a7b3' },
 ];
 
+const legendItems = [
+  { name: 'Host bone ends', note: 'Native femur above and below the defect', color: '#ecad7b' },
+  { name: 'Vascularized fibula graft', note: 'Central biological graft scaffold', color: '#f2756a' },
+  { name: 'Vessel pathway', note: 'Red line representing the graft vasculature', color: '#ff8c75' },
+  { name: 'MA-HA hydrogel', note: 'Inner swelling layer that applies inward pressure', color: '#55d9d1' },
+  { name: 'Structural shell', note: 'Load-bearing biodegradable middle layer', color: '#67d9d0' },
+  { name: 'Hydrophobic seal skin', note: 'Outer fluid barrier that protects the construct', color: '#e5c56d' },
+  { name: 'Regenerating native matrix', note: 'Green mineralized bone bridge over time', color: '#75d39f' },
+  { name: 'Step-bevel joints', note: 'Interlocking end interfaces at the host bone', color: '#aa684c' },
+];
+
 export default function Home() {
   const [month, setMonth] = useState(6);
   const [view, setView] = useState<ViewMode>('perspective');
-  const [inspectorTab, setInspectorTab] = useState<'readout' | 'layers'>('readout');
+  const [inspectorTab, setInspectorTab] = useState<'readout' | 'layers' | 'legend'>('readout');
   const [visibleLayers, setVisibleLayers] = useState<Record<string, boolean>>(() => Object.fromEntries(layers.map((layer) => [layer.name, true])));
   const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState('');
@@ -79,8 +90,9 @@ export default function Home() {
           <aside className="space-y-4">
             <section className="glass-panel overflow-hidden rounded-xl animate-enter" style={{ animationDelay: '100ms' }}>
               <div className="flex border-b border-slate-800/80">
-                <button type="button" data-testid="button-inspector-readout" onClick={() => setInspectorTab('readout')} className={`flex-1 px-4 py-3 mono text-[10px] uppercase tracking-wider transition-colors ${inspectorTab === 'readout' ? 'border-b border-cyan-300 text-cyan-200' : 'text-slate-500 hover:text-slate-300'}`}>readout</button>
-                <button type="button" data-testid="button-inspector-layers" onClick={() => setInspectorTab('layers')} className={`flex-1 px-4 py-3 mono text-[10px] uppercase tracking-wider transition-colors ${inspectorTab === 'layers' ? 'border-b border-cyan-300 text-cyan-200' : 'text-slate-500 hover:text-slate-300'}`}>layers</button>
+                <button type="button" data-testid="button-inspector-readout" onClick={() => setInspectorTab('readout')} className={`flex-1 px-3 py-3 mono text-[10px] uppercase tracking-wider transition-colors ${inspectorTab === 'readout' ? 'border-b border-cyan-300 text-cyan-200' : 'text-slate-500 hover:text-slate-300'}`}>readout</button>
+                <button type="button" data-testid="button-inspector-layers" onClick={() => setInspectorTab('layers')} className={`flex-1 px-3 py-3 mono text-[10px] uppercase tracking-wider transition-colors ${inspectorTab === 'layers' ? 'border-b border-cyan-300 text-cyan-200' : 'text-slate-500 hover:text-slate-300'}`}>layers</button>
+                <button type="button" data-testid="button-inspector-legend" onClick={() => setInspectorTab('legend')} className={`flex-1 px-3 py-3 mono text-[10px] uppercase tracking-wider transition-colors ${inspectorTab === 'legend' ? 'border-b border-cyan-300 text-cyan-200' : 'text-slate-500 hover:text-slate-300'}`}>legend</button>
               </div>
               {inspectorTab === 'readout' ? <div className="p-4">
                 <div className="mb-4 flex items-center justify-between"><span className="mono text-[10px] uppercase tracking-[.18em] text-slate-500">Current slice</span><span className="mono text-sm text-orange-200">M{String(month).padStart(2, '0')}</span></div>
@@ -89,10 +101,21 @@ export default function Home() {
                   <div className="rounded-lg bg-slate-800/45 p-3"><p className="mono text-[9px] text-slate-500">defect span</p><p className="mt-1 mono text-[13px] text-slate-200">42.0 mm</p></div>
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-slate-800/80 pt-3"><span className="text-[11px] text-slate-500">Matrix confidence</span><span className="mono text-[11px] text-emerald-300">high / 0.91</span></div>
-              </div> : <div className="p-4">
+              </div> : inspectorTab === 'layers' ? <div className="p-4">
                 <div className="mb-3 flex items-center justify-between"><span className="mono text-[10px] uppercase tracking-[.18em] text-slate-500">Assembly layers</span><span className="mono text-[9px] text-slate-600">5 visible</span></div>
                 <div className="space-y-1">
                   {layers.map((layer) => <button type="button" key={layer.name} data-testid={`button-toggle-layer-${layer.name.toLowerCase().replaceAll(' ', '-')}`} onClick={() => setVisibleLayers((current) => ({ ...current, [layer.name]: !current[layer.name] }))} className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left transition-colors hover:bg-slate-800/70"><span className="flex items-center gap-2.5"><span className="h-2 w-2 rounded-full" style={{ backgroundColor: layer.color }} /><span><span className={`block text-[11px] ${visibleLayers[layer.name] ? 'text-slate-200' : 'text-slate-600 line-through'}`}>{layer.name}</span><span className="block text-[9px] text-slate-600">{layer.note}</span></span></span>{visibleLayers[layer.name] ? <Eye size={13} className="text-slate-500" /> : <EyeOff size={13} className="text-slate-700" />}</button>)}
+                </div>
+              </div> : <div className="p-4">
+                <div className="mb-3">
+                  <span className="mono text-[10px] uppercase tracking-[.18em] text-slate-500">Current model interpretation</span>
+                  <p className="mt-1 text-[10px] leading-relaxed text-slate-600">Color key only — anatomy and mechanics can be revised from your explanation.</p>
+                </div>
+                <div className="space-y-2.5">
+                  {legendItems.map((item) => <div key={item.name} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span><span className="block text-[11px] text-slate-200">{item.name}</span><span className="block text-[9px] leading-relaxed text-slate-600">{item.note}</span></span>
+                  </div>)}
                 </div>
               </div>}
             </section>

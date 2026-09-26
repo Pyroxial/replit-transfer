@@ -58,7 +58,7 @@ function fallbackAssembly(
   context.clearRect(0, 0, width, height);
 
   const progress = month / 18;
-  const gap = 154 - progress * 50;
+  const gap = 190;
   const scale = Math.min(width / 360, height / 550) * transform.zoom;
   const cx = width / 2 + transform.panX;
   const cy = height / 2 + transform.panY;
@@ -66,7 +66,7 @@ function fallbackAssembly(
   context.save();
   context.translate(cx, cy);
   context.rotate(view === 'section' ? transform.rotation * 0.25 : transform.rotation);
-  context.scale(scale, scale);
+  context.scale(scale * (view === 'section' ? -1 : 1), scale);
 
   const roundedRect = (
     x: number,
@@ -83,9 +83,9 @@ function fallbackAssembly(
     context.save();
     context.globalAlpha = Math.max(0.25, 1 - progress * 0.7);
     context.strokeStyle = '#55d9d1';
-    context.lineWidth = 24;
+    context.lineWidth = 14;
     context.setLineDash([3, 8]);
-    roundedRect(-88, -gap / 2 - 18, 176, gap + 36, 26);
+    roundedRect(-66, -gap / 2 - 12, 132, gap + 24, 20);
     context.stroke();
     context.restore();
   }
@@ -94,31 +94,33 @@ function fallbackAssembly(
     context.save();
     context.globalAlpha = Math.max(0.28, 1 - progress * 0.72);
     context.strokeStyle = '#e5c56d';
-    context.lineWidth = 8;
-    roundedRect(-75, -gap / 2 - 10, 150, gap + 20, 18);
+    context.lineWidth = 6;
+    roundedRect(-59, -gap / 2 - 8, 118, gap + 16, 15);
     context.stroke();
     context.restore();
   }
 
   if (visibleLayers['Regenerating matrix']) {
     const matrixGradient = context.createLinearGradient(-50, 0, 50, 0);
-    matrixGradient.addColorStop(0, '#5fbd8e');
-    matrixGradient.addColorStop(0.5, '#bce9c7');
-    matrixGradient.addColorStop(1, '#55ad82');
-    context.globalAlpha = 0.16 + progress * 0.58;
+    matrixGradient.addColorStop(0, '#4cae7f');
+    matrixGradient.addColorStop(0.5, '#c8efd1');
+    matrixGradient.addColorStop(1, '#4cae7f');
+    context.globalAlpha = 0.2 + progress * 0.72;
     context.fillStyle = matrixGradient;
-    roundedRect(-51, -gap / 2 - 3, 102, gap + 6, 14);
+    const matrixHalfWidth = 32 + progress * 34;
+    roundedRect(-matrixHalfWidth, -gap / 2 - 3, matrixHalfWidth * 2, gap + 6, 14);
     context.fill();
   }
 
   if (visibleLayers['Vascularized fibula graft']) {
     context.globalAlpha = 0.98;
     const graftGradient = context.createLinearGradient(-31, 0, 31, 0);
-    graftGradient.addColorStop(0, '#d85d5e');
-    graftGradient.addColorStop(0.18, '#f4f4ed');
-    graftGradient.addColorStop(0.5, '#ffffff');
-    graftGradient.addColorStop(0.82, '#f4f4ed');
-    graftGradient.addColorStop(1, '#d85d5e');
+    graftGradient.addColorStop(0, '#c94d55');
+    graftGradient.addColorStop(0.24, '#e96b64');
+    graftGradient.addColorStop(0.42, '#f4f4ed');
+    graftGradient.addColorStop(0.58, '#ffffff');
+    graftGradient.addColorStop(0.76, '#f4f4ed');
+    graftGradient.addColorStop(1, '#e96b64');
     context.fillStyle = graftGradient;
     roundedRect(-32, -gap / 2 - 3, 64, gap + 6, 12);
     context.fill();
@@ -153,7 +155,7 @@ function fallbackAssembly(
   }
 
   const drawBone = (top: boolean) => {
-    const y = top ? -gap / 2 - 146 : gap / 2;
+    const y = top ? -gap / 2 - 120 : gap / 2;
     const depth = top ? -12 : 12;
     context.save();
     context.translate(depth, 0);
@@ -162,12 +164,12 @@ function fallbackAssembly(
     gradient.addColorStop(0.38, '#ffffff');
     gradient.addColorStop(1, '#e9eee8');
     context.fillStyle = gradient;
-    roundedRect(-78, y, 156, 146, 22);
+    roundedRect(-66, y, 132, 120, 18);
     context.fill();
     context.fillStyle = 'rgba(94, 113, 111, .28)';
-    context.fillRect(-55, top ? y + 116 : y + 8, 110, 24);
+    context.fillRect(-45, top ? y + 96 : y + 8, 90, 20);
     context.fillStyle = 'rgba(255, 255, 255, .62)';
-    context.fillRect(-62, top ? y + 8 : y + 114, 124, 5);
+    context.fillRect(-50, top ? y + 8 : y + 94, 100, 5);
     context.restore();
   };
 
@@ -256,7 +258,7 @@ export function RegenerationViewport({
 
     const group = new three.Group();
     const progress = month / 18;
-    const gap = 1.78 - progress * 0.62;
+    const gap = 2.5;
     const sliceStart = view === 'section' ? -Math.PI / 2 : 0;
     const sliceLength = view === 'section' ? Math.PI : Math.PI * 2;
     const boneOpen = view === 'section';
@@ -273,24 +275,24 @@ export function RegenerationViewport({
       side: three.DoubleSide,
     });
     const upper = new three.Mesh(
-      new three.CylinderGeometry(1.17, 1.38, 2.7, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.88, 1.02, 2.2, 16, 1, boneOpen, sliceStart, sliceLength),
       boneMaterial,
     );
     upper.name = 'Host bone ends';
-    upper.position.y = gap / 2 + 1.35;
+    upper.position.y = gap / 2 + 1.1;
     group.add(upper);
     const lower = new three.Mesh(
-      new three.CylinderGeometry(1.38, 1.17, 2.7, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(1.02, 0.88, 2.2, 16, 1, boneOpen, sliceStart, sliceLength),
       boneHighlight,
     );
     lower.name = 'Host bone ends';
-    lower.position.y = -gap / 2 - 1.35;
+    lower.position.y = -gap / 2 - 1.1;
     lower.rotation.y = 0.18;
     group.add(lower);
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
-      new three.CylinderGeometry(1.02, 1.02, gap + 1.1, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(1.02, 1.02, gap + 0.72, 20, 1, true, sliceStart, sliceLength),
       new three.MeshPhysicalMaterial({
         color: 0x67d9d0,
         transparent: true,
@@ -303,7 +305,7 @@ export function RegenerationViewport({
     shell.name = 'Structural shell';
     group.add(shell);
     const barrier = new three.Mesh(
-      new three.CylinderGeometry(0.84, 0.84, gap + 0.86, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.9, 0.9, gap + 0.56, 20, 1, true, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
         color: 0xe4c06e,
         transparent: true,
@@ -314,12 +316,13 @@ export function RegenerationViewport({
     );
     barrier.name = 'Hydrophobic seal';
     group.add(barrier);
+    const matrixRadius = 0.48 + progress * 0.54;
     const matrix = new three.Mesh(
-      new three.CylinderGeometry(0.67, 0.67, gap + 0.48, 18, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, boneOpen, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
         color: 0x76d69d,
         transparent: true,
-        opacity: 0.16 + progress * 0.58,
+        opacity: 0.2 + progress * 0.72,
         roughness: 0.72,
         side: three.DoubleSide,
       }),
@@ -327,14 +330,14 @@ export function RegenerationViewport({
     matrix.name = 'Regenerating matrix';
     group.add(matrix);
     const graft = new three.Mesh(
-      new three.CylinderGeometry(0.48, 0.48, gap + 0.58, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, boneOpen, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xf4f4ed, roughness: 0.78, side: three.DoubleSide }),
     );
     graft.name = 'Vascularized fibula graft';
     graft.position.z = 0.03;
     group.add(graft);
     const graftVascularHalf = new three.Mesh(
-      new three.CylinderGeometry(0.485, 0.485, gap + 0.6, 16, 1, boneOpen, Math.PI / 2, Math.PI),
+      new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, boneOpen, Math.PI / 2, Math.PI),
       new three.MeshStandardMaterial({ color: 0xe96b64, roughness: 0.7, side: three.DoubleSide }),
     );
     graftVascularHalf.name = 'Vascularized fibula graft';
@@ -349,7 +352,7 @@ export function RegenerationViewport({
     vessel.position.y = 0;
     group.add(vessel);
     const vesselCore = new three.Mesh(
-      new three.CylinderGeometry(0.045, 0.045, gap + 0.55, 8, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.06, 0.06, gap + 0.4, 8, 1, boneOpen, sliceStart, sliceLength),
       new three.MeshBasicMaterial({ color: 0xf2756a }),
     );
     vesselCore.name = 'Vascularized fibula graft';
@@ -392,6 +395,7 @@ export function RegenerationViewport({
       group.position.y = -transform.panY * 0.005;
       group.rotation.y = transform.rotation;
       group.rotation.x = transform.tilt;
+      group.scale.x = view === 'section' ? -1 : 1;
       camera.position.x = 0;
       camera.position.y = view === 'section' ? 0.35 : 0.25;
       camera.position.z = (view === 'section' ? 10.5 : 8.6) / transform.zoom;

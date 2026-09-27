@@ -282,9 +282,10 @@ export function RegenerationViewport({
     const group = new three.Group();
     const progress = month / 18;
     const gap = 3;
-    const sliceStart = view === 'section' ? -Math.PI / 2 : 0;
-    const sliceLength = view === 'section' ? Math.PI : Math.PI * 2;
-    const boneOpen = view === 'section';
+    const isSection = view === 'section';
+    const sliceStart = isSection ? -Math.PI / 2 : 0;
+    const sliceLength = isSection ? Math.PI : Math.PI * 2;
+    const layerOpenEnded = !isSection;
     const boneMaterial = new three.MeshStandardMaterial({
       color: 0xf1f4ed,
       roughness: 0.72,
@@ -298,14 +299,14 @@ export function RegenerationViewport({
       side: three.DoubleSide,
     });
     const upper = new three.Mesh(
-      new three.CylinderGeometry(0.88, 1.02, 1.47, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.88, 1.02, 1.47, 16, 1, false, sliceStart, sliceLength),
       boneMaterial,
     );
     upper.name = 'Host bone ends';
     upper.position.y = gap / 2 + 0.735;
     group.add(upper);
     const lower = new three.Mesh(
-      new three.CylinderGeometry(1.02, 0.88, 1.47, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(1.02, 0.88, 1.47, 16, 1, false, sliceStart, sliceLength),
       boneHighlight,
     );
     lower.name = 'Host bone ends';
@@ -315,7 +316,7 @@ export function RegenerationViewport({
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
-      new three.CylinderGeometry(0.96, 0.96, gap + 0.62, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.96, 0.96, gap + 0.62, 20, 1, layerOpenEnded, sliceStart, sliceLength),
       new three.MeshPhysicalMaterial({
         color: 0x67d9d0,
         transparent: true,
@@ -330,7 +331,7 @@ export function RegenerationViewport({
     shell.renderOrder = 60;
     group.add(shell);
     const barrier = new three.Mesh(
-      new three.CylinderGeometry(0.86, 0.86, gap + 0.5, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.86, 0.86, gap + 0.5, 20, 1, layerOpenEnded, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
         color: 0xe4c06e,
         transparent: true,
@@ -345,7 +346,7 @@ export function RegenerationViewport({
     group.add(barrier);
     const matrixRadius = 0.48 + progress * 0.54;
     const matrix = new three.Mesh(
-      new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
         color: 0xcbd3d1,
         transparent: true,
@@ -359,7 +360,7 @@ export function RegenerationViewport({
     matrix.renderOrder = 10;
     group.add(matrix);
     const graft = new three.Mesh(
-      new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xf4f4ed, roughness: 0.78, side: three.DoubleSide }),
     );
     graft.name = 'Vascularized fibula graft';
@@ -367,7 +368,7 @@ export function RegenerationViewport({
     graft.renderOrder = 20;
     group.add(graft);
     const graftVascularHalf = new three.Mesh(
-      new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, boneOpen, Math.PI / 4, Math.PI * 1.5),
+      new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xe96b64, roughness: 0.7, side: three.DoubleSide }),
     );
     graftVascularHalf.name = 'Vascularized fibula graft';
@@ -375,7 +376,7 @@ export function RegenerationViewport({
     graftVascularHalf.renderOrder = 30;
     group.add(graftVascularHalf);
     const vessel = new three.Mesh(
-      new three.TorusGeometry(0.57, 0.035, 7, 48),
+      new three.TorusGeometry(0.57, 0.035, 7, 48, sliceLength),
       new three.MeshBasicMaterial({ color: 0xe96b64 }),
     );
     vessel.name = 'Vascularized fibula graft';
@@ -384,7 +385,7 @@ export function RegenerationViewport({
     vessel.renderOrder = 40;
     group.add(vessel);
     const vesselCore = new three.Mesh(
-      new three.CylinderGeometry(0.06, 0.06, gap + 0.4, 8, 1, boneOpen, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.06, 0.06, gap + 0.4, 8, 1, false, sliceStart, sliceLength),
       new three.MeshBasicMaterial({ color: 0xf2756a }),
     );
     vesselCore.name = 'Vascularized fibula graft';

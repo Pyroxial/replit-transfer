@@ -83,9 +83,9 @@ function fallbackAssembly(
     context.save();
     context.globalAlpha = Math.max(0.25, 1 - progress * 0.7);
     context.strokeStyle = '#55d9d1';
-    context.lineWidth = 14;
+    context.lineWidth = 10;
     context.setLineDash([3, 8]);
-    roundedRect(-66, -gap / 2 - 12, 132, gap + 24, 20);
+    roundedRect(-64, -gap / 2 - 10, 128, gap + 20, 18);
     context.stroke();
     context.restore();
   }
@@ -102,9 +102,9 @@ function fallbackAssembly(
 
   if (visibleLayers['Regenerating matrix']) {
     const matrixGradient = context.createLinearGradient(-50, 0, 50, 0);
-    matrixGradient.addColorStop(0, '#4cae7f');
-    matrixGradient.addColorStop(0.5, '#c8efd1');
-    matrixGradient.addColorStop(1, '#4cae7f');
+    matrixGradient.addColorStop(0, '#a7b5b5');
+    matrixGradient.addColorStop(0.5, '#e4e9e4');
+    matrixGradient.addColorStop(1, '#9baaaa');
     context.globalAlpha = 0.2 + progress * 0.72;
     context.fillStyle = matrixGradient;
     const matrixHalfWidth = 32 + progress * 34;
@@ -218,9 +218,9 @@ function fallbackAssembly(
     context.save();
     context.globalAlpha = Math.max(0.34, 1 - progress * 0.55);
     context.strokeStyle = '#55d9d1';
-    context.lineWidth = 14;
+    context.lineWidth = 10;
     context.setLineDash([3, 8]);
-    roundedRect(-66, -gap / 2 - 12, 132, gap + 24, 20);
+    roundedRect(-64, -gap / 2 - 10, 128, gap + 20, 18);
     context.stroke();
     context.restore();
   }
@@ -315,7 +315,7 @@ export function RegenerationViewport({
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
-      new three.CylinderGeometry(1.02, 1.02, gap + 0.72, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.96, 0.96, gap + 0.62, 20, 1, true, sliceStart, sliceLength),
       new three.MeshPhysicalMaterial({
         color: 0x67d9d0,
         transparent: true,
@@ -330,7 +330,7 @@ export function RegenerationViewport({
     shell.renderOrder = 60;
     group.add(shell);
     const barrier = new three.Mesh(
-      new three.CylinderGeometry(0.9, 0.9, gap + 0.56, 20, 1, true, sliceStart, sliceLength),
+      new three.CylinderGeometry(0.86, 0.86, gap + 0.5, 20, 1, true, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
         color: 0xe4c06e,
         transparent: true,
@@ -347,7 +347,7 @@ export function RegenerationViewport({
     const matrix = new three.Mesh(
       new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, boneOpen, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
-        color: 0x76d69d,
+        color: 0xcbd3d1,
         transparent: true,
         opacity: 0.2 + progress * 0.72,
         roughness: 0.72,

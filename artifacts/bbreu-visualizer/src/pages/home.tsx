@@ -9,8 +9,8 @@ import { getPhase, getTelemetry, type ViewMode } from '@/components/bbreu/types'
 const layers = [
   { name: 'Host bone ends', note: 'White native bone', color: '#f1f4ed' },
   { name: 'Vascularized fibula graft', note: 'White graft with red vessels', color: '#e96b64' },
-  { name: 'Regenerating matrix', note: 'Radial bone growth from graft', color: '#76d69d' },
-  { name: 'Structural shell', note: 'Encasing matched to bone radius', color: '#5bd7d0' },
+  { name: 'Regenerating matrix', note: 'Light-gray radial bone growth from graft', color: '#cbd3d1' },
+  { name: 'Structural shell', note: 'Thinner blue outer encasing', color: '#5bd7d0' },
   { name: 'Hydrophobic seal', note: 'Outer barrier layer', color: '#e5c56d' },
 ];
 
@@ -18,7 +18,7 @@ const legendItems = [
   { name: 'Original bone / bone ends', note: 'White native bone on both sides of the gap', colors: ['#f7f8f2', '#d6ddd6'] },
   { name: 'Vascularized fibula graft', note: 'White biological graft with red vascular markings', colors: ['#f7f8f2', '#e96b64'] },
   { name: 'Vessel pathway', note: 'Red line showing blood-vessel continuity through the graft', colors: ['#e96b64'] },
-  { name: 'Regenerating bone', note: 'Green matrix grows sideways from the graft and fills the gap by M18', colors: ['#76d69d'] },
+  { name: 'Regenerating bone', note: 'Light-gray matrix grows sideways from the graft and fills the gap by M18', colors: ['#cbd3d1'] },
   { name: 'MA-HA hydrogel', note: 'Cyan inner layer surrounding the graft', colors: ['#55d9d1'] },
   { name: 'Structural shell', note: 'Turquoise biodegradable encasing around the construct', colors: ['#67d9d0'] },
   { name: 'Hydrophobic seal', note: 'Gold outer fluid barrier around the encasing', colors: ['#e5c56d'] },

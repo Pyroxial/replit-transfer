@@ -144,11 +144,11 @@ function fallbackAssembly(
     context.fillStyle = '#e7eee7';
     [-1, 1].forEach((side) => {
       const y = side * (gap / 2 + 5);
-      roundedRect(-82, y - 9, 164, 18, 7);
+      roundedRect(-64, y - 8, 128, 16, 7);
       context.fill();
       context.fillStyle = '#b9c8c1';
       for (let index = 0; index < 5; index += 1) {
-        context.fillRect(-62 + index * 30, side < 0 ? y - 14 : y - 1, 16, 7);
+        context.fillRect(-50 + index * 24, side < 0 ? y - 12 : y - 1, 13, 6);
       }
       context.fillStyle = '#e7eee7';
     });
@@ -298,6 +298,33 @@ export function RegenerationViewport({
       metalness: 0.03,
       side: three.DoubleSide,
     });
+    const addSectionCutFaces = (
+      radius: number,
+      height: number,
+      centerY: number,
+      centerZ: number,
+      material: any,
+      name: string,
+      renderOrder: number,
+      rotationY = 0,
+    ) => {
+      if (!isSection) return;
+      [sliceStart, sliceStart + sliceLength].forEach((angle) => {
+        const face = new three.Mesh(
+          new three.PlaneGeometry(radius, height),
+          material.clone(),
+        );
+        face.name = name;
+        face.position.set(
+          Math.sin(angle + rotationY) * radius / 2,
+          centerY,
+          Math.cos(angle + rotationY) * radius / 2 + centerZ,
+        );
+        face.rotation.y = angle + rotationY - Math.PI / 2;
+        face.renderOrder = renderOrder + 1;
+        group.add(face);
+      });
+    };
     const upper = new three.Mesh(
       new three.CylinderGeometry(0.88, 1.02, 1.47, 16, 1, false, sliceStart, sliceLength),
       boneMaterial,
@@ -305,6 +332,7 @@ export function RegenerationViewport({
     upper.name = 'Host bone ends';
     upper.position.y = gap / 2 + 0.735;
     group.add(upper);
+    addSectionCutFaces(1.02, 1.47, upper.position.y, 0, boneMaterial, 'Host bone ends', 0);
     const lower = new three.Mesh(
       new three.CylinderGeometry(1.02, 0.88, 1.47, 16, 1, false, sliceStart, sliceLength),
       boneHighlight,
@@ -313,6 +341,7 @@ export function RegenerationViewport({
     lower.position.y = -gap / 2 - 0.735;
     lower.rotation.y = 0.18;
     group.add(lower);
+    addSectionCutFaces(1.02, 1.47, lower.position.y, 0, boneHighlight, 'Host bone ends', 0, lower.rotation.y);
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
@@ -330,6 +359,7 @@ export function RegenerationViewport({
     shell.name = 'Structural shell';
     shell.renderOrder = 60;
     group.add(shell);
+    addSectionCutFaces(0.96, gap + 0.62, 0, 0, shell.material, 'Structural shell', 60);
     const barrier = new three.Mesh(
       new three.CylinderGeometry(0.86, 0.86, gap + 0.5, 20, 1, layerOpenEnded, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
@@ -344,6 +374,7 @@ export function RegenerationViewport({
     barrier.name = 'Hydrophobic seal';
     barrier.renderOrder = 50;
     group.add(barrier);
+    addSectionCutFaces(0.86, gap + 0.5, 0, 0, barrier.material, 'Hydrophobic seal', 50);
     const matrixRadius = 0.48 + progress * 0.54;
     const matrix = new three.Mesh(
       new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, false, sliceStart, sliceLength),
@@ -359,6 +390,7 @@ export function RegenerationViewport({
     matrix.name = 'Regenerating matrix';
     matrix.renderOrder = 10;
     group.add(matrix);
+    addSectionCutFaces(matrixRadius, gap + 0.28, 0, 0, matrix.material, 'Regenerating matrix', 10);
     const graft = new three.Mesh(
       new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xf4f4ed, roughness: 0.78, side: three.DoubleSide }),
@@ -367,6 +399,7 @@ export function RegenerationViewport({
     graft.position.z = 0.03;
     graft.renderOrder = 20;
     group.add(graft);
+    addSectionCutFaces(0.48, gap + 0.34, 0, graft.position.z, graft.material, 'Vascularized fibula graft', 20);
     const graftVascularHalf = new three.Mesh(
       new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xe96b64, roughness: 0.7, side: three.DoubleSide }),
@@ -375,6 +408,7 @@ export function RegenerationViewport({
     graftVascularHalf.position.z = 0.04;
     graftVascularHalf.renderOrder = 30;
     group.add(graftVascularHalf);
+    addSectionCutFaces(0.485, gap + 0.36, 0, graftVascularHalf.position.z, graftVascularHalf.material, 'Vascularized fibula graft', 30);
     const vessel = new three.Mesh(
       new three.TorusGeometry(0.57, 0.035, 7, 48, sliceLength),
       new three.MeshBasicMaterial({ color: 0xe96b64 }),
@@ -392,6 +426,7 @@ export function RegenerationViewport({
     vesselCore.position.set(0.25, 0, 0.5);
     vesselCore.renderOrder = 40;
     group.add(vesselCore);
+    addSectionCutFaces(0.06, gap + 0.4, 0, vesselCore.position.z, vesselCore.material, 'Vascularized fibula graft', 40);
 
     const jointMaterial = new three.MeshStandardMaterial({
       color: 0xe7eee7,
@@ -399,7 +434,7 @@ export function RegenerationViewport({
       metalness: 0.02,
     });
     [-1, 1].forEach((side) => {
-      const joint = new three.Mesh(new three.BoxGeometry(1.42, 0.23, 1.08), jointMaterial);
+      const joint = new three.Mesh(new three.BoxGeometry(1.28, 0.23, 0.96), jointMaterial);
       joint.name = 'Structural shell';
       joint.position.set(0, side * (gap / 2 + 0.18), 0);
       joint.rotation.y = side * 0.13;

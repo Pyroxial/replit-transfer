@@ -339,9 +339,8 @@ export function RegenerationViewport({
     );
     lower.name = 'Host bone ends';
     lower.position.y = -gap / 2 - 0.735;
-    lower.rotation.y = 0.18;
     group.add(lower);
-    addSectionCutFaces(1.02, 1.47, lower.position.y, 0, boneHighlight, 'Host bone ends', 0, lower.rotation.y);
+    addSectionCutFaces(1.02, 1.47, lower.position.y, 0, boneHighlight, 'Host bone ends', 0);
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
@@ -432,13 +431,18 @@ export function RegenerationViewport({
       color: 0xe7eee7,
       roughness: 0.56,
       metalness: 0.02,
+      side: three.DoubleSide,
     });
     [-1, 1].forEach((side) => {
-      const joint = new three.Mesh(new three.BoxGeometry(1.28, 0.23, 0.96), jointMaterial);
+      const joint = new three.Mesh(
+        new three.CylinderGeometry(0.9, 0.9, 0.18, 20, 1, layerOpenEnded, sliceStart, sliceLength),
+        jointMaterial,
+      );
       joint.name = 'Structural shell';
-      joint.position.set(0, side * (gap / 2 + 0.18), 0);
-      joint.rotation.y = side * 0.13;
+      joint.position.set(0, side * (gap / 2 + 0.09), 0);
+      joint.renderOrder = 70;
       group.add(joint);
+      addSectionCutFaces(0.9, 0.18, joint.position.y, 0, jointMaterial, 'Structural shell', 70);
     });
     group.traverse((object: any) => {
       if (object.name && visibleLayers[object.name] === false) object.visible = false;

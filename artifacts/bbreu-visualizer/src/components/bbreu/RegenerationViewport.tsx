@@ -203,6 +203,28 @@ function fallbackAssembly(
     context.restore();
   }
 
+  // Repaint the translucent boundaries last so the encasing remains visible
+  // over the denser matrix and graft layers in the 2D fallback.
+  if (visibleLayers['Hydrophobic seal']) {
+    context.save();
+    context.globalAlpha = Math.max(0.42, 1 - progress * 0.5);
+    context.strokeStyle = '#e5c56d';
+    context.lineWidth = 6;
+    roundedRect(-59, -gap / 2 - 8, 118, gap + 16, 15);
+    context.stroke();
+    context.restore();
+  }
+  if (visibleLayers['Structural shell']) {
+    context.save();
+    context.globalAlpha = Math.max(0.34, 1 - progress * 0.55);
+    context.strokeStyle = '#55d9d1';
+    context.lineWidth = 14;
+    context.setLineDash([3, 8]);
+    roundedRect(-66, -gap / 2 - 12, 132, gap + 24, 20);
+    context.stroke();
+    context.restore();
+  }
+
   context.restore();
 }
 
@@ -300,10 +322,12 @@ export function RegenerationViewport({
         opacity: shellOpacity * 0.31,
         roughness: 0.18,
         transmission: 0.12,
+        depthWrite: false,
         side: three.DoubleSide,
       }),
     );
     shell.name = 'Structural shell';
+    shell.renderOrder = 60;
     group.add(shell);
     const barrier = new three.Mesh(
       new three.CylinderGeometry(0.9, 0.9, gap + 0.56, 20, 1, true, sliceStart, sliceLength),
@@ -312,10 +336,12 @@ export function RegenerationViewport({
         transparent: true,
         opacity: shellOpacity * 0.42,
         roughness: 0.3,
+        depthWrite: false,
         side: three.DoubleSide,
       }),
     );
     barrier.name = 'Hydrophobic seal';
+    barrier.renderOrder = 50;
     group.add(barrier);
     const matrixRadius = 0.48 + progress * 0.54;
     const matrix = new three.Mesh(
@@ -325,10 +351,12 @@ export function RegenerationViewport({
         transparent: true,
         opacity: 0.2 + progress * 0.72,
         roughness: 0.72,
+        depthWrite: false,
         side: three.DoubleSide,
       }),
     );
     matrix.name = 'Regenerating matrix';
+    matrix.renderOrder = 10;
     group.add(matrix);
     const graft = new three.Mesh(
       new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, boneOpen, sliceStart, sliceLength),
@@ -336,6 +364,7 @@ export function RegenerationViewport({
     );
     graft.name = 'Vascularized fibula graft';
     graft.position.z = 0.03;
+    graft.renderOrder = 20;
     group.add(graft);
     const graftVascularHalf = new three.Mesh(
       new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, boneOpen, Math.PI / 4, Math.PI * 1.5),
@@ -343,6 +372,7 @@ export function RegenerationViewport({
     );
     graftVascularHalf.name = 'Vascularized fibula graft';
     graftVascularHalf.position.z = 0.04;
+    graftVascularHalf.renderOrder = 30;
     group.add(graftVascularHalf);
     const vessel = new three.Mesh(
       new three.TorusGeometry(0.57, 0.035, 7, 48),
@@ -351,6 +381,7 @@ export function RegenerationViewport({
     vessel.name = 'Vascularized fibula graft';
     vessel.rotation.x = Math.PI / 2;
     vessel.position.y = 0;
+    vessel.renderOrder = 40;
     group.add(vessel);
     const vesselCore = new three.Mesh(
       new three.CylinderGeometry(0.06, 0.06, gap + 0.4, 8, 1, boneOpen, sliceStart, sliceLength),
@@ -358,6 +389,7 @@ export function RegenerationViewport({
     );
     vesselCore.name = 'Vascularized fibula graft';
     vesselCore.position.set(0.25, 0, 0.5);
+    vesselCore.renderOrder = 40;
     group.add(vesselCore);
 
     const jointMaterial = new three.MeshStandardMaterial({

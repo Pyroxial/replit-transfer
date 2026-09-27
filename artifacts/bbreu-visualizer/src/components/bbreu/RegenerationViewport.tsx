@@ -115,12 +115,11 @@ function fallbackAssembly(
   if (visibleLayers['Vascularized fibula graft']) {
     context.globalAlpha = 0.98;
     const graftGradient = context.createLinearGradient(-31, 0, 31, 0);
-    graftGradient.addColorStop(0, '#b83c4d');
-    graftGradient.addColorStop(0.28, '#df525a');
-    graftGradient.addColorStop(0.4, '#ef7770');
-    graftGradient.addColorStop(0.5, '#f4f4ed');
-    graftGradient.addColorStop(0.6, '#ffffff');
-    graftGradient.addColorStop(0.72, '#ef7770');
+    graftGradient.addColorStop(0, '#c74350');
+    graftGradient.addColorStop(0.28, '#e95d68');
+    graftGradient.addColorStop(0.4, '#f57ab8');
+    graftGradient.addColorStop(0.6, '#f57ab8');
+    graftGradient.addColorStop(0.72, '#eb6c86');
     graftGradient.addColorStop(1, '#c74350');
     context.fillStyle = graftGradient;
     roundedRect(-32, -gap / 2 - 3, 64, gap + 6, 12);
@@ -299,7 +298,8 @@ export function RegenerationViewport({
       side: three.DoubleSide,
     });
     const addSectionCutFaces = (
-      radius: number,
+      radiusTop: number,
+      radiusBottom: number,
       height: number,
       centerY: number,
       centerZ: number,
@@ -310,15 +310,30 @@ export function RegenerationViewport({
     ) => {
       if (!isSection) return;
       [sliceStart, sliceStart + sliceLength].forEach((angle) => {
+        const geometry = new three.BufferGeometry();
+        geometry.setAttribute(
+          'position',
+          new three.Float32BufferAttribute(
+            [
+              0, -height / 2, 0,
+              radiusBottom, -height / 2, 0,
+              0, height / 2, 0,
+              radiusTop, height / 2, 0,
+            ],
+            3,
+          ),
+        );
+        geometry.setIndex([0, 1, 2, 2, 1, 3]);
+        geometry.computeVertexNormals();
         const face = new three.Mesh(
-          new three.PlaneGeometry(radius, height),
+          geometry,
           material.clone(),
         );
         face.name = name;
         face.position.set(
-          Math.sin(angle + rotationY) * radius / 2,
+          0,
           centerY,
-          Math.cos(angle + rotationY) * radius / 2 + centerZ,
+          centerZ,
         );
         face.rotation.y = angle + rotationY - Math.PI / 2;
         face.renderOrder = renderOrder + 1;
@@ -332,7 +347,7 @@ export function RegenerationViewport({
     upper.name = 'Host bone ends';
     upper.position.y = gap / 2 + 0.735;
     group.add(upper);
-    addSectionCutFaces(1.02, 1.47, upper.position.y, 0, boneMaterial, 'Host bone ends', 0);
+    addSectionCutFaces(0.88, 1.02, 1.47, upper.position.y, 0, boneMaterial, 'Host bone ends', 0);
     const lower = new three.Mesh(
       new three.CylinderGeometry(1.02, 0.88, 1.47, 16, 1, false, sliceStart, sliceLength),
       boneHighlight,
@@ -340,7 +355,7 @@ export function RegenerationViewport({
     lower.name = 'Host bone ends';
     lower.position.y = -gap / 2 - 0.735;
     group.add(lower);
-    addSectionCutFaces(1.02, 1.47, lower.position.y, 0, boneHighlight, 'Host bone ends', 0);
+    addSectionCutFaces(1.02, 0.88, 1.47, lower.position.y, 0, boneHighlight, 'Host bone ends', 0);
 
     const shellOpacity = Math.max(0.12, 1 - progress * 0.7);
     const shell = new three.Mesh(
@@ -358,7 +373,7 @@ export function RegenerationViewport({
     shell.name = 'Structural shell';
     shell.renderOrder = 60;
     group.add(shell);
-    addSectionCutFaces(0.96, gap + 0.62, 0, 0, shell.material, 'Structural shell', 60);
+    addSectionCutFaces(0.96, 0.96, gap + 0.62, 0, 0, shell.material, 'Structural shell', 60);
     const barrier = new three.Mesh(
       new three.CylinderGeometry(0.86, 0.86, gap + 0.5, 20, 1, layerOpenEnded, sliceStart, sliceLength),
       new three.MeshStandardMaterial({
@@ -373,7 +388,7 @@ export function RegenerationViewport({
     barrier.name = 'Hydrophobic seal';
     barrier.renderOrder = 50;
     group.add(barrier);
-    addSectionCutFaces(0.86, gap + 0.5, 0, 0, barrier.material, 'Hydrophobic seal', 50);
+    addSectionCutFaces(0.86, 0.86, gap + 0.5, 0, 0, barrier.material, 'Hydrophobic seal', 50);
     const matrixRadius = 0.48 + progress * 0.54;
     const matrix = new three.Mesh(
       new three.CylinderGeometry(matrixRadius, matrixRadius, gap + 0.28, 18, 1, false, sliceStart, sliceLength),
@@ -389,16 +404,16 @@ export function RegenerationViewport({
     matrix.name = 'Regenerating matrix';
     matrix.renderOrder = 10;
     group.add(matrix);
-    addSectionCutFaces(matrixRadius, gap + 0.28, 0, 0, matrix.material, 'Regenerating matrix', 10);
+    addSectionCutFaces(matrixRadius, matrixRadius, gap + 0.28, 0, 0, matrix.material, 'Regenerating matrix', 10);
     const graft = new three.Mesh(
       new three.CylinderGeometry(0.48, 0.48, gap + 0.34, 16, 1, false, sliceStart, sliceLength),
-      new three.MeshStandardMaterial({ color: 0xf4f4ed, roughness: 0.78, side: three.DoubleSide }),
+      new three.MeshStandardMaterial({ color: 0xf57ab8, roughness: 0.78, side: three.DoubleSide }),
     );
     graft.name = 'Vascularized fibula graft';
     graft.position.z = 0.03;
     graft.renderOrder = 20;
     group.add(graft);
-    addSectionCutFaces(0.48, gap + 0.34, 0, graft.position.z, graft.material, 'Vascularized fibula graft', 20);
+    addSectionCutFaces(0.48, 0.48, gap + 0.34, 0, graft.position.z, graft.material, 'Vascularized fibula graft', 20);
     const graftVascularHalf = new three.Mesh(
       new three.CylinderGeometry(0.485, 0.485, gap + 0.36, 16, 1, false, sliceStart, sliceLength),
       new three.MeshStandardMaterial({ color: 0xe96b64, roughness: 0.7, side: three.DoubleSide }),
@@ -407,7 +422,7 @@ export function RegenerationViewport({
     graftVascularHalf.position.z = 0.04;
     graftVascularHalf.renderOrder = 30;
     group.add(graftVascularHalf);
-    addSectionCutFaces(0.485, gap + 0.36, 0, graftVascularHalf.position.z, graftVascularHalf.material, 'Vascularized fibula graft', 30);
+    addSectionCutFaces(0.485, 0.485, gap + 0.36, 0, graftVascularHalf.position.z, graftVascularHalf.material, 'Vascularized fibula graft', 30);
     const vessel = new three.Mesh(
       new three.TorusGeometry(0.57, 0.035, 7, 48, sliceLength),
       new three.MeshBasicMaterial({ color: 0xe96b64 }),
@@ -425,7 +440,7 @@ export function RegenerationViewport({
     vesselCore.position.set(0.25, 0, 0.5);
     vesselCore.renderOrder = 40;
     group.add(vesselCore);
-    addSectionCutFaces(0.06, gap + 0.4, 0, vesselCore.position.z, vesselCore.material, 'Vascularized fibula graft', 40);
+    addSectionCutFaces(0.06, 0.06, gap + 0.4, 0, vesselCore.position.z, vesselCore.material, 'Vascularized fibula graft', 40);
 
     const jointMaterial = new three.MeshStandardMaterial({
       color: 0xe7eee7,
@@ -442,7 +457,7 @@ export function RegenerationViewport({
       joint.position.set(0, side * (gap / 2 + 0.09), 0);
       joint.renderOrder = 70;
       group.add(joint);
-      addSectionCutFaces(0.9, 0.18, joint.position.y, 0, jointMaterial, 'Structural shell', 70);
+      addSectionCutFaces(0.9, 0.9, 0.18, joint.position.y, 0, jointMaterial, 'Structural shell', 70);
     });
     group.traverse((object: any) => {
       if (object.name && visibleLayers[object.name] === false) object.visible = false;
